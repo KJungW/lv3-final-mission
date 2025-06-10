@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<String> handleLoginException(LoginException exception) {
-        return ResponseEntity.unprocessableEntity().body("로그인에 실패했습니다");
+        return ResponseEntity.badRequest().body("로그인에 실패했습니다");
     }
 
     @ExceptionHandler(NotFoundException.class)

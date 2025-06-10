@@ -31,7 +31,7 @@ public class AuthController {
                 .secure(false)
                 .build();
         return ResponseEntity
-                .noContent()
+                .ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }
