@@ -2,7 +2,9 @@ package finalmission.utility;
 
 import finalmission.domain.Role;
 import finalmission.dto.layer.AccessTokenContent;
+import finalmission.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
@@ -36,13 +38,17 @@ public class JwtProvider {
     }
 
     public AccessTokenContent parseAccessToken(String accessToken) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(accessToken)
-                .getPayload();
-        Long memberId = Long.valueOf(claims.get("id").toString());
-        Role role = Role.valueOf(claims.get("role").toString());
-        return new AccessTokenContent(memberId, role);
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(accessToken)
+                    .getPayload();
+            Long memberId = Long.valueOf(claims.get("id").toString());
+            Role role = Role.valueOf(claims.get("role").toString());
+            return new AccessTokenContent(memberId, role);
+        } catch (JwtException | IllegalArgumentException exception) {
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
+        }
     }
 }

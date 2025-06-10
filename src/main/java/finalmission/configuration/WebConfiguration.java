@@ -1,6 +1,6 @@
 package finalmission.configuration;
 
-import finalmission.intercept.AccessTokenResolver;
+import finalmission.resolver.AccessTokenResolver;
 import finalmission.utility.JwtProvider;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;

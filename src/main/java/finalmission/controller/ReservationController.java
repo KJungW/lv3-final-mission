@@ -60,6 +60,8 @@ public class ReservationController {
             @AccessToken AccessTokenContent accessToken,
             @Valid @RequestBody AddReservationRequest request
     ) {
+        // [TODO] : 외부 API 호출을 통해 공휴일인지 아닌지 체크 (예약 저장 트랜젝션과 분리)
+
         ReservationCreationContent creationContent = new ReservationCreationContent(accessToken.memberId(), request);
         Reservation reservation = reservationService.addReservation(creationContent);
         return ResponseEntity.created(URI.create("reservation/" + reservation.getId())).build();

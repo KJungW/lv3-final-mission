@@ -1,4 +1,4 @@
-package finalmission.intercept;
+package finalmission.resolver;
 
 import finalmission.annotation.AccessToken;
 import finalmission.dto.layer.AccessTokenContent;
