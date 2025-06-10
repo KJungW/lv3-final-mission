@@ -40,6 +40,10 @@ public class Member {
         this.role = role;
     }
 
+    public boolean comparePassword(String password) {
+        return getPassword().equals(password);
+    }
+
     public Long getId() {
         return id;
     }
