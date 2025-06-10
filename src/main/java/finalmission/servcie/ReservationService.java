@@ -4,6 +4,7 @@ import finalmission.domain.Member;
 import finalmission.domain.Reservation;
 import finalmission.domain.Seat;
 import finalmission.dto.layer.ReservationCreationContent;
+import finalmission.dto.layer.ReservationUpdateContent;
 import finalmission.dto.response.FindAllReservationByMember;
 import finalmission.dto.response.FindAllReservationBySeat;
 import finalmission.dto.response.FindReservationById;
@@ -55,7 +56,6 @@ public class ReservationService {
         return new FindReservationById(reservation);
     }
 
-
     @Transactional
     public Reservation addReservation(ReservationCreationContent content) {
         Member member = getMemberById(content.memberId());
@@ -65,6 +65,22 @@ public class ReservationService {
         validateAlreadyReservation(reservation);
         validateAddPastReservation(reservation);
         return reservationRepository.save(reservation);
+    }
+
+    @Transactional
+    public void updateReservationById(long memberId, ReservationUpdateContent updateContent) {
+        Member member = getMemberById(memberId);
+        Reservation reservation = getReservationById(updateContent.reservationId());
+        validateMineReservation(member, reservation);
+        reservation.updateReason(updateContent.reason());
+    }
+
+    @Transactional
+    public void deleteReservation(long memberId, long reservationId) {
+        Member member = getMemberById(memberId);
+        Reservation reservation = getReservationById(reservationId);
+        validateMineReservation(member, reservation);
+        reservationRepository.delete(reservation);
     }
 
     private Member getMemberById(Long memberId) {

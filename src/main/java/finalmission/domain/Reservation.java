@@ -48,6 +48,10 @@ public class Reservation {
         return getDate().isBefore(LocalDate.now());
     }
 
+    public void updateReason(String reason) {
+        this.reason = reason;
+    }
+
     public Long getId() {
         return id;
     }
