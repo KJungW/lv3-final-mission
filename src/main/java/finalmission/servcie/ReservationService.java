@@ -4,11 +4,13 @@ import finalmission.domain.Member;
 import finalmission.domain.Reservation;
 import finalmission.domain.Seat;
 import finalmission.dto.layer.ReservationCreationContent;
+import finalmission.dto.response.FindAllReservationBySeat;
 import finalmission.exception.BadRequestException;
 import finalmission.exception.NotFoundException;
 import finalmission.repository.MemberRepository;
 import finalmission.repository.PositionRepository;
 import finalmission.repository.ReservationRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,17 @@ public class ReservationService {
         this.positionRepository = positionRepository;
     }
 
+    @Transactional(readOnly = true)
+    public List<FindAllReservationBySeat> findAllReservationBySeats(long seatId) {
+        Seat seat = getSeatById(seatId);
+        List<Reservation> reservations = reservationRepository.findAllBySeat(seat);
+        return reservations.stream().map(FindAllReservationBySeat::new).toList();
+    }
+
     @Transactional
     public Reservation addReservation(ReservationCreationContent content) {
         Member member = getMemberById(content.memberId());
-        Seat seat = getPositionById(content.positionId());
+        Seat seat = getSeatById(content.positionId());
 
         Reservation reservation = new Reservation(member, seat, content.reason(), content.date());
         validateAlreadyReservation(reservation);
@@ -46,7 +55,7 @@ public class ReservationService {
                 () -> new NotFoundException("ID에 해당하는 회원이 존재하지 않습니다."));
     }
 
-    private Seat getPositionById(Long positionId) {
+    private Seat getSeatById(Long positionId) {
         return positionRepository.findById(positionId).orElseThrow(
                 () -> new NotFoundException("ID에 해당하는 자리가 존재하지 않습니다."));
     }
