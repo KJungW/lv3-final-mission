@@ -1,9 +1,11 @@
 package finalmission.controller;
 
+import finalmission.domain.Member;
 import finalmission.dto.layer.MemberCreationContent;
 import finalmission.dto.request.SignupRequest;
 import finalmission.servcie.MemberService;
 import jakarta.validation.Valid;
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,7 @@ public class MemberController {
     @PostMapping("/member")
     public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequest request) {
         MemberCreationContent creationContent = new MemberCreationContent(request);
-        memberService.addMember(creationContent);
-        return ResponseEntity.noContent().build();
+        Member member = memberService.addMember(creationContent);
+        return ResponseEntity.created(URI.create("member/" + member.getId())).build();
     }
 }

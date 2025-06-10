@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -24,19 +25,27 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Position position;
+    private Seat seat;
 
     @Lob
     @Column(nullable = false)
     private String reason;
 
+    @Column(nullable = false)
+    private LocalDate date;
+
     protected Reservation() {
     }
 
-    public Reservation(Member member, Position position, String reason) {
+    public Reservation(Member member, Seat seat, String reason, LocalDate date) {
         this.member = member;
-        this.position = position;
+        this.seat = seat;
         this.reason = reason;
+        this.date = date;
+    }
+
+    public boolean isPast() {
+        return getDate().isBefore(LocalDate.now());
     }
 
     public Long getId() {
@@ -47,12 +56,16 @@ public class Reservation {
         return member;
     }
 
-    public Position getPosition() {
-        return position;
+    public Seat getPosition() {
+        return seat;
     }
 
     public String getReason() {
         return reason;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     @Override

@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class Position {
+public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +17,10 @@ public class Position {
     @Column(nullable = false)
     private String name;
 
-    protected Position() {
+    protected Seat() {
     }
 
-    public Position(String name) {
+    public Seat(String name) {
         this.name = name;
     }
 
@@ -37,11 +37,11 @@ public class Position {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Position position = (Position) o;
-        if (getId() == null || position.getId() == null) {
+        Seat seat = (Seat) o;
+        if (getId() == null || seat.getId() == null) {
             return false;
         }
-        return Objects.equals(id, position.id);
+        return Objects.equals(id, seat.id);
     }
 
     @Override

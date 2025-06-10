@@ -18,11 +18,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void addMember(MemberCreationContent creationContent) {
+    public Member addMember(MemberCreationContent creationContent) {
         validateDuplicatedEmail(creationContent.email());
         Member member = new Member(
                 creationContent.email(), creationContent.password(), creationContent.name(), Role.GENERAL);
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
     private void validateDuplicatedEmail(String email) {
