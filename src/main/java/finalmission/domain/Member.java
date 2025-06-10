@@ -23,16 +23,20 @@ public class Member {
     private String password;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
     protected Member() {
     }
 
-    public Member(String email, String password, Role role) {
+    public Member(String email, String password, String name, Role role) {
         this.id = null;
         this.email = email;
         this.password = password;
+        this.name = name;
         this.role = role;
     }
 
@@ -46,6 +50,10 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Role getRole() {
