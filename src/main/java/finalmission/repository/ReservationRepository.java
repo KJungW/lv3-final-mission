@@ -1,5 +1,6 @@
 package finalmission.repository;
 
+import finalmission.domain.Member;
 import finalmission.domain.Reservation;
 import finalmission.domain.Seat;
 import java.time.LocalDate;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     boolean existsByDate(@Param("date") LocalDate date);
+
+    List<Reservation> findAllByMember(@Param("member") Member member);
 
     List<Reservation> findAllBySeat(@Param("seat") Seat seat);
 }

@@ -56,7 +56,7 @@ public class Reservation {
         return member;
     }
 
-    public Seat getPosition() {
+    public Seat getSeat() {
         return seat;
     }
 
