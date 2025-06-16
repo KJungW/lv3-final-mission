@@ -9,8 +9,12 @@ public record SignupRequest(
         String email,
         @NotBlank
         String password,
-        @NotBlank
         String name
 ) {
 
+    public SignupRequest(String email, String password, String name) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
 }

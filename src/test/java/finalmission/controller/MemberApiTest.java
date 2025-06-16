@@ -4,9 +4,11 @@ import finalmission.domain.Member;
 import finalmission.domain.Role;
 import finalmission.dto.request.SignupRequest;
 import finalmission.repository.MemberRepository;
+import finalmission.test.stub.RandomNameClientStub;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,9 +26,11 @@ class MemberApiTest {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private RandomNameClientStub randomNameClientStub;
 
-    @BeforeEach
-    void setup() {
+    @AfterEach
+    void afterEach() {
         memberRepository.deleteAll();
     }
 
@@ -66,6 +70,24 @@ class MemberApiTest {
                     .post("/member")
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @DisplayName("이름을 입력하지 않은 경우 랜덤 이름으로 회원가입이 진행된다.")
+        @Test
+        void canSignupWithRandomName() {
+            // given
+            randomNameClientStub.setGenerateRandomNamesSuccess(List.of("random_name"));
+
+            // when & then
+            RestAssured
+                    .given().log().all()
+                    .contentType(ContentType.JSON)
+                    .port(port)
+                    .body(new SignupRequest("test@test.com", "qwer1234!", null))
+                    .when().log().all()
+                    .post("/member")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value());
         }
     }
 }
