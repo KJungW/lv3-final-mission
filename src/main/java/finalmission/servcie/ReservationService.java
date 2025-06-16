@@ -59,7 +59,7 @@ public class ReservationService {
     @Transactional
     public Reservation addReservation(ReservationCreationContent content) {
         Member member = getMemberById(content.memberId());
-        Seat seat = getSeatById(content.positionId());
+        Seat seat = getSeatById(content.seatId());
 
         Reservation reservation = new Reservation(member, seat, content.reason(), content.date());
         validateAlreadyReservation(reservation);

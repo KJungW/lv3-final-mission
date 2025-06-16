@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public record ReservationCreationContent(
         Long memberId,
-        Long positionId,
+        Long seatId,
         String reason,
         LocalDate date
 ) {
