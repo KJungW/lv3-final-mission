@@ -1,5 +1,8 @@
 package finalmission.controller;
 
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
+
 import finalmission.domain.Member;
 import finalmission.domain.Role;
 import finalmission.dto.request.SignupRequest;
@@ -9,15 +12,19 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 
+@AutoConfigureRestDocs
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class MemberApiTest {
 
@@ -29,8 +36,17 @@ class MemberApiTest {
     @Autowired
     private RandomNameClientStub randomNameClientStub;
 
+    @Autowired
+    private RestDocumentationContextProvider restDocumentation;
+
+    @BeforeEach
+    void setup() {
+        RestAssured.filters(documentationConfiguration(restDocumentation));
+    }
+
     @AfterEach
     void afterEach() {
+        RestAssured.reset();
         memberRepository.deleteAll();
     }
 
@@ -47,6 +63,7 @@ class MemberApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .body(new SignupRequest("test@test.com", "qwer1234!", "kim"))
+                    .filter(document("signup"))
                     .when().log().all()
                     .post("/member")
                     .then()
@@ -66,6 +83,7 @@ class MemberApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .body(new SignupRequest(duplicatedEmail, "qwer1234!", "kim"))
+                    .filter(document("signup/duplicated_email"))
                     .when().log().all()
                     .post("/member")
                     .then()

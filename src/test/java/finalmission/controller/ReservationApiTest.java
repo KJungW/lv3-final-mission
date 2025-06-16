@@ -2,6 +2,8 @@ package finalmission.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 import finalmission.domain.Member;
 import finalmission.domain.Reservation;
@@ -19,15 +21,19 @@ import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 
+@AutoConfigureRestDocs
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ReservationApiTest {
 
@@ -44,18 +50,27 @@ class ReservationApiTest {
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private RestDocumentationContextProvider restDocumentation;
+
+    @BeforeEach
+    void setup() {
+        RestAssured.filters(documentationConfiguration(restDocumentation));
+    }
+
     @AfterEach
     void afterEach() {
+        RestAssured.reset();
         reservationRepository.deleteAll();
         memberRepository.deleteAll();
         seatRepository.deleteAll();
     }
 
     @Nested
-    @DisplayName("자리마다의 예약 현황을 조회할 수 있다.")
+    @DisplayName("자리 마다의 예약 현황을 조회할 수 있다.")
     public class FindAllReservationBySeat {
 
-        @DisplayName("정상적으로 자리마다의 예약 현환을 조회할 수 있다.")
+        @DisplayName("정상적으로 자리 마다의 예약 현환을 조회할 수 있다.")
         @Test
         void findAllReservationBySeat() {
             // given
@@ -72,6 +87,7 @@ class ReservationApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .queryParam("seatId", seat.getId())
+                    .filter(document("find_reservation_by_seat"))
                     .when().log().all()
                     .get("/reservation")
                     .then()
@@ -103,6 +119,7 @@ class ReservationApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
+                    .filter(document("find_reservation_by_member"))
                     .when().log().all()
                     .get("/member/reservation")
                     .then()
@@ -118,6 +135,7 @@ class ReservationApiTest {
                     .given().log().all()
                     .contentType(ContentType.JSON)
                     .port(port)
+                    .filter(document("find_reservation_by_member/unauthorized"))
                     .when().log().all()
                     .get("/member/reservation")
                     .then()
@@ -147,6 +165,7 @@ class ReservationApiTest {
                     .port(port)
                     .pathParam("reservationId", reservation.getId())
                     .header("Cookie", "access=" + accessToken)
+                    .filter(document("find_reservation_by_id"))
                     .when().log().all()
                     .get("/reservation/{reservationId}")
                     .then()
@@ -173,6 +192,7 @@ class ReservationApiTest {
                     .port(port)
                     .pathParam("reservationId", reservation.getId())
                     .header("Cookie", "access=" + accessToken)
+                    .filter(document("find_reservation_by_id/other_member"))
                     .when().log().all()
                     .get("/reservation/{reservationId}")
                     .then()
@@ -201,6 +221,7 @@ class ReservationApiTest {
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
                     .body(request)
+                    .filter(document("add_reservation"))
                     .when().log().all()
                     .post("/reservation")
                     .then()
@@ -227,6 +248,7 @@ class ReservationApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
+                    .filter(document("add_reservation/already_reserved"))
                     .body(request)
                     .when().log().all()
                     .post("/reservation")
@@ -251,6 +273,7 @@ class ReservationApiTest {
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
                     .body(request)
+                    .filter(document("add_reservation/past_date"))
                     .when().log().all()
                     .post("/reservation")
                     .then()
@@ -281,6 +304,7 @@ class ReservationApiTest {
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
                     .body(request)
+                    .filter(document("update_reservation"))
                     .when().log().all()
                     .put("/reservation")
                     .then()
@@ -307,6 +331,7 @@ class ReservationApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
+                    .filter(document("update_reservation/other_member"))
                     .body(request)
                     .when().log().all()
                     .put("/reservation")
@@ -337,6 +362,7 @@ class ReservationApiTest {
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
                     .pathParam("reservationId", reservation.getId())
+                    .filter(document("delete_reservation"))
                     .when().log().all()
                     .delete("/reservation/{reservationId}")
                     .then()
@@ -363,6 +389,7 @@ class ReservationApiTest {
                     .port(port)
                     .header("Cookie", "access=" + accessToken)
                     .pathParam("reservationId", reservation.getId())
+                    .filter(document("delete_reservation/other_member"))
                     .when().log().all()
                     .delete("/reservation/{reservationId}")
                     .then()

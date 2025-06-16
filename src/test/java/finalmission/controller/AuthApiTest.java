@@ -1,5 +1,8 @@
 package finalmission.controller;
 
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
+
 import finalmission.domain.Member;
 import finalmission.domain.Role;
 import finalmission.dto.request.LoginRequest;
@@ -7,15 +10,19 @@ import finalmission.repository.MemberRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 
+@AutoConfigureRestDocs
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class AuthApiTest {
 
@@ -25,8 +32,17 @@ class AuthApiTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private RestDocumentationContextProvider restDocumentation;
+
+    @BeforeEach
+    void setup() {
+        RestAssured.filters(documentationConfiguration(restDocumentation));
+    }
+
     @AfterEach
     void afterEach() {
+        RestAssured.reset();
         memberRepository.deleteAll();
     }
 
@@ -46,6 +62,7 @@ class AuthApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .body(new LoginRequest("member@email.com", "qwer1234!"))
+                    .filter(document("login"))
                     .when().log().all()
                     .post("/login")
                     .then()
@@ -64,6 +81,7 @@ class AuthApiTest {
                     .contentType(ContentType.JSON)
                     .port(port)
                     .body(new LoginRequest("member@email.com", "qwer1234!"))
+                    .filter(document("login/incorrect_password"))
                     .when().log().all()
                     .post("/login")
                     .then()
@@ -83,6 +101,7 @@ class AuthApiTest {
                     .given().log().all()
                     .contentType(ContentType.JSON)
                     .port(port)
+                    .filter(document("logout"))
                     .when().log().all()
                     .post("/logout")
                     .then()
