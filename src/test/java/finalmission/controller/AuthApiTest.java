@@ -32,7 +32,7 @@ class AuthApiTest {
 
     @Nested()
     @DisplayName("로그인 할 수 있다.")
-    public class canLogin {
+    public class CanLogin {
 
         @DisplayName("정상적으로 로그인 할 수 있다.")
         @Test
@@ -73,7 +73,7 @@ class AuthApiTest {
 
     @Nested
     @DisplayName("로그아웃 할 수 있다.")
-    public class canLogout {
+    public class CanLogout {
 
         @DisplayName("정상적으로 로그아웃 할 수 있다.")
         @Test

@@ -7,29 +7,22 @@ import finalmission.domain.Member;
 import finalmission.domain.Role;
 import finalmission.dto.layer.MemberCreationContent;
 import finalmission.exception.BadRequestException;
-import finalmission.repository.MemberRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 @DataJpaTest
+@Import(value = {MemberService.class})
 class MemberServiceTest {
 
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
-    private MemberRepository memberRepository;
-
     private MemberService memberService;
-
-    @BeforeEach
-    void setup() {
-        memberService = new MemberService(memberRepository);
-    }
 
     @Nested
     @DisplayName("회원을 추가할 수 있다.")
@@ -56,6 +49,9 @@ class MemberServiceTest {
             Member member = entityManager.persist(new Member("test@test.ocm", "qwer1234!", "Kim", Role.GENERAL));
             MemberCreationContent creationContent =
                     new MemberCreationContent(member.getEmail(), "qwer1234!", "Kim");
+
+            entityManager.flush();
+            entityManager.clear();
 
             // when & then
             assertThatThrownBy(() -> memberService.addMember(creationContent))

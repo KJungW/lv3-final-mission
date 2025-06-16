@@ -19,9 +19,9 @@ public class RandommerRandomNameClient implements RandomNameClient {
     private final String apiKey;
     private final String generationUrl;
 
-    public RandommerRandomNameClient(ObjectMapper objectMapper, RestClient restClient, String apiKey,
+    public RandommerRandomNameClient(RestClient restClient, String apiKey,
             String generationUrl) {
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
         this.restClient = restClient;
         this.apiKey = apiKey;
         this.generationUrl = generationUrl;
@@ -32,6 +32,7 @@ public class RandommerRandomNameClient implements RandomNameClient {
         try {
             return requestGenerateRandomName(quantity);
         } catch (RestClientException restClientException) {
+            System.out.println("restClientException = " + restClientException.getMessage());
             throw new ExternalApiConnectionException("외부 서버와 연결이 불안정합니다.");
         }
     }

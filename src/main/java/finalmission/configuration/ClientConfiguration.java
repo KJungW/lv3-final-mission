@@ -1,6 +1,5 @@
 package finalmission.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import finalmission.client.RandomNameClient;
 import finalmission.client.RandommerRandomNameClient;
 import java.time.Duration;
@@ -15,12 +14,6 @@ import org.springframework.web.client.RestClient;
 @Profile("!test")
 public class ClientConfiguration {
 
-    private final ObjectMapper objectMapper;
-
-    public ClientConfiguration(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
     @Bean
     public RandomNameClient randomNameClient(
             @Value("${client.random-name.base-url}") String baseUrl,
@@ -32,7 +25,7 @@ public class ClientConfiguration {
                 .requestFactory(simpleClientHttpRequestFactory())
                 .defaultHeaders(headers -> headers.set("Content-Type", "application/json"))
                 .build();
-        return new RandommerRandomNameClient(objectMapper, restClient, apiKey, generationUrl);
+        return new RandommerRandomNameClient(restClient, apiKey, generationUrl);
     }
 
     private SimpleClientHttpRequestFactory simpleClientHttpRequestFactory() {

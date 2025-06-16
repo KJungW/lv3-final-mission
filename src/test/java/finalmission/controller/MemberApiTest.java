@@ -36,7 +36,7 @@ class MemberApiTest {
 
     @Nested
     @DisplayName("회원가입 할 수 있다.")
-    public class canSignup {
+    public class CanSignup {
 
         @DisplayName("정상적으로 회원가입 할 수 있다.")
         @Test
