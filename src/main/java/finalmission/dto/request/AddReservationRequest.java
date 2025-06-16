@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public record AddReservationRequest(
         @NotNull
-        Long positionId,
+        Long seatId,
         @NotBlank
         String reason,
         @NotNull

@@ -11,6 +11,6 @@ public record ReservationCreationContent(
 ) {
 
     public ReservationCreationContent(long memberId, AddReservationRequest request) {
-        this(memberId, request.positionId(), request.reason(), request.date());
+        this(memberId, request.seatId(), request.reason(), request.date());
     }
 }
