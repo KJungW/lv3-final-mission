@@ -11,8 +11,8 @@ import finalmission.dto.response.FindReservationById;
 import finalmission.exception.BadRequestException;
 import finalmission.exception.NotFoundException;
 import finalmission.repository.MemberRepository;
-import finalmission.repository.PositionRepository;
 import finalmission.repository.ReservationRepository;
+import finalmission.repository.SeatRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +22,16 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
-    private final PositionRepository positionRepository;
+    private final SeatRepository seatRepository;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             MemberRepository memberRepository,
-            PositionRepository positionRepository
+            SeatRepository seatRepository
     ) {
         this.reservationRepository = reservationRepository;
         this.memberRepository = memberRepository;
-        this.positionRepository = positionRepository;
+        this.seatRepository = seatRepository;
     }
 
     @Transactional(readOnly = true)
@@ -89,7 +89,7 @@ public class ReservationService {
     }
 
     private Seat getSeatById(Long positionId) {
-        return positionRepository.findById(positionId).orElseThrow(
+        return seatRepository.findById(positionId).orElseThrow(
                 () -> new NotFoundException("ID에 해당하는 자리가 존재하지 않습니다."));
     }
 
