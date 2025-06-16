@@ -32,7 +32,6 @@ public class RandommerRandomNameClient implements RandomNameClient {
         try {
             return requestGenerateRandomName(quantity);
         } catch (RestClientException restClientException) {
-            System.out.println("restClientException = " + restClientException.getMessage());
             throw new ExternalApiConnectionException("외부 서버와 연결이 불안정합니다.");
         }
     }
