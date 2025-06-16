@@ -6,7 +6,7 @@ import finalmission.dto.request.LoginRequest;
 import finalmission.repository.MemberRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,8 +25,8 @@ class AuthApiTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @BeforeEach
-    void setup() {
+    @AfterEach
+    void afterEach() {
         memberRepository.deleteAll();
     }
 

@@ -18,7 +18,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,8 +44,8 @@ class ReservationApiTest {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @BeforeEach
-    void setup() {
+    @AfterEach
+    void afterEach() {
         reservationRepository.deleteAll();
         memberRepository.deleteAll();
         seatRepository.deleteAll();
