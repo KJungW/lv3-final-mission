@@ -5,10 +5,10 @@ services:
   application:
     build:
       context: ..
-      dockerfile: docker/Dockerfile_dev
+      dockerfile: docker/Dockerfile
     container_name: application
     ports:
-      - "8080:8080"
+      - "80:8080"
     networks:
       - back_net
     volumes:

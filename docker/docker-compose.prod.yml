@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+
+  application:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: application
+    ports:
+      - "80:8080"
+    networks:
+      - back_net
+    volumes:
+      - ./logs:/var/logs
+    restart: always
+
+networks:
+  back_net:
+    driver: bridge
