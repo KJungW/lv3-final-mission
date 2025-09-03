@@ -3,7 +3,9 @@ version: '3.8'
 services:
 
   application:
-    image: sagakkb/practice:latest
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile_dev
     container_name: application
     ports:
       - "8080:8080"
