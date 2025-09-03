@@ -1,0 +1,3 @@
+[submodule "src/main/resources/configuration"]
+	path = src/main/resources/configuration
+	url = https://github.com/KJungW/lv3-final-mission-submodule.git
